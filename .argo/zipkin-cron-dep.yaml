@@ -1,0 +1,33 @@
+---
+type: deployment
+version: 1
+name: zipkin-cron
+
+application_name: "%%inputs.parameters.APP_NAME%%"
+deployment_name: "zipkin-cron"
+
+inputs:
+  parameters:
+    APP_NAME:
+      default: "zipkin"
+
+scale:
+  min: 1
+
+containers:
+  zipkin-cron-container:
+    image: openzipkin/zipkin-dependencies:1.4.0
+    env:
+    - name: STORAGE_TYPE
+      value: "mysql"
+    - name:  MYSQL_HOST
+      value: "zipkin-mysql"
+    - name:  MYSQL_USER
+      value: "zipkin"
+    - name:  MYSQL_PASS
+      value: "zipkin"
+    command: ["crond"]
+    args: ["-f"]
+    resources:
+      cpu_cores: 0.1
+      mem_mib: 128

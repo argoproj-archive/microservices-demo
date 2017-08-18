@@ -1,0 +1,64 @@
+---
+type: workflow
+version: 1
+name: sock-shop-workflow
+description: This is the workflow to deploy microservices based sock-shop app
+
+inputs:
+  parameters:
+    APP_NAME:
+      default: "sock-shop"
+    CART_DB_VOL_NAME:
+      default: "sock-shop-cart-db"
+    CART_VOL_NAME:
+      default: "sock-shop-cart"
+    ORDERS_DB_VOL_NAME:
+      default: "sock-shop-order-db"
+    ORDERS_VOL_NAME:
+      default: "sock-shop-order"
+    SHIPPING_VOL_NAME:
+      default: "sock-shop-shipping"
+    USER_DB_VOL_NAME:
+      default: "sock-shop-user-db"
+
+
+steps:
+  -
+    deploy-carts-db:
+        template: carts-db
+    deploy-catalogue-db:
+        template: catalogue-db
+    deploy-orders-db:
+        template: orders-db
+    deploy-queue-master:
+        template: queue-master
+    deploy-rabbitmq:
+        template: rabbitmq
+    deploy-session-db:
+        template: session-db
+    deploy-user-db:
+        template: user-db
+  -
+    deploy-user:
+        template: user
+    deploy-carts:
+        template: carts
+    deploy-catalogue:
+        template: catalogue
+    deploy-orders:
+        template: orders
+    deploy-payment:
+        template: payment
+    deploy-shipping:
+        template: shipping
+
+  - 
+    deploy-front-end:
+        template: front-end
+    deploy-zipkin-mysql:
+        template: zipkin-mysql
+    deploy-zipkin:
+        template: zipkin
+    deploy-zipkin-cron:
+        template: zipkin-cron
+---

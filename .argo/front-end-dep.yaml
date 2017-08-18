@@ -1,0 +1,31 @@
+---
+type: deployment
+version: 1
+name: front-end
+
+application_name: "%%inputs.parameters.APP_NAME%%"
+deployment_name: "front-end"
+
+inputs:
+  parameters:
+    APP_NAME:
+      default: "sock-shop"
+
+scale:
+  min: 1
+
+external_routes:
+  - dns_prefix: "sockshop"
+    target_port: 8079
+    ip_white_list:
+      - 0.0.0.0/0
+
+containers:
+  front-end-container:
+    image: argoproj/sockshop-frontend:latest
+    env:
+    - name: SESSION_REDIS
+      value: "true"
+    resources:
+      cpu_cores: 0.1
+      mem_mib: 256

@@ -1,0 +1,44 @@
+---
+type: deployment
+version: 1
+name: shipping
+
+application_name: "%%inputs.parameters.APP_NAME%%"
+deployment_name: "shipping"
+
+inputs:
+  parameters:
+    APP_NAME:
+      default: "sock-shop"
+    SHIPPING_VOL_NAME:
+
+volumes:
+  shipping-vol:
+    name: "%%inputs.parameters.SHIPPING_VOL_NAME%%"
+
+scale:
+  min: 1
+
+internal_routes:
+  - name: shipping
+    ports:
+      - port: 80
+        target_port: 80
+
+containers:
+  shipping-container:
+    image: weaveworksdemos/shipping:0.4.8
+    env:
+    - name: ZIPKIN
+      value: "zipkin.zipkin.svc.cluster.local"
+    - name: JAVA_OPTS
+      value: "-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom"
+    args: ["--spring.zipkin.baseUrl=http://zipkin:9411"]
+    resources:
+      mem_mib: 512
+      cpu_cores: 0.2
+    inputs:
+      volumes:
+        shipping-vol:
+          from: "%%volumes.shipping-vol%%"
+          mount_path: /tmp

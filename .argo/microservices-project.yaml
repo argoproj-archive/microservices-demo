@@ -1,0 +1,19 @@
+---
+type: project
+version: 1
+name: Microservices Demo
+description: Sock shop app with multiple microservices
+actions:
+  deploy sock shop:
+    template: sock-shop-workflow
+categories: ["demo", "promoted"]
+publish:
+  branches:
+    - master
+labels:
+    tags: "[\"demo\"]"
+    publisher: Applatix
+assets:
+    icon: "/sockshop.png"
+    publisher_icon: "/AX_Pub.png"
+    detail: "/README.md"

@@ -1,0 +1,40 @@
+---
+type: deployment
+version: 1
+name: zipkin
+
+
+application_name: "%%inputs.parameters.APP_NAME%%"
+deployment_name: "zipkin"
+
+inputs:
+  parameters:
+    APP_NAME:
+      default: "zipkin"
+
+scale:
+  min: 1
+
+external_routes:
+  - dns_prefix: "zipkin"
+    target_port: 9411
+    ip_white_list:
+      - 0.0.0.0/0
+
+internal_routes:
+  - name: zipkin
+    ports:
+      - port: 9411
+        target_port: 9411
+
+containers:
+  zipkin-container:
+    image: openzipkin/zipkin
+    env:
+    - name: STORAGE_TYPE
+      value: "mysql"
+    - name: MYSQL_HOST
+      value: "zipkin-mysql"  
+    resources:
+      cpu_cores: 0.2
+      mem_mib: 1024

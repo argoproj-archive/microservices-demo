@@ -1,0 +1,28 @@
+---
+type: deployment
+version: 1
+name: session-db
+
+application_name: "%%inputs.parameters.APP_NAME%%"
+deployment_name: "session-db"
+
+inputs:
+  parameters:
+    APP_NAME:
+      default: "sock-shop"
+
+scale:
+  min: 1
+
+internal_routes:
+  - name: session-db
+    ports:
+      - port: 6379
+        target_port: 6379
+
+containers:
+  session-db-container:
+    image: "redis:alpine"
+    resources:
+      mem_mib: 128
+      cpu_cores: 0.1

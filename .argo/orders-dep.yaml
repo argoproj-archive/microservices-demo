@@ -1,0 +1,43 @@
+--- 
+type: deployment
+version: 1
+name: orders
+
+application_name: "%%inputs.parameters.APP_NAME%%"
+deployment_name: "orders"
+
+inputs:
+  parameters:
+    APP_NAME:
+      default: "sock-shop"
+    ORDERS_VOL_NAME:
+
+volumes:
+  orders-vol:
+    name: "%%inputs.parameters.ORDERS_VOL_NAME%%"
+
+scale:
+  min: 1
+
+internal_routes:
+  - name: orders
+    ports:
+      - port: 80
+        target_port: 80
+
+containers:
+  orders-container:
+    image: weaveworksdemos/orders:0.4.7
+    env:
+      - name: JAVA_OPTS
+        value: "-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom"
+    args: ["--spring.zipkin.baseUrl=http://zipkin:9411"]
+    resources:
+      cpu_cores: 0.2 
+      mem_mib: 1024
+    inputs:
+      volumes:
+        orders-vol:
+          from: "%%volumes.orders-vol%%"
+          mount_path: /tmp
+--- 

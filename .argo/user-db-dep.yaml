@@ -1,0 +1,38 @@
+---
+type: deployment
+version: 1
+name: user-db
+application_name: "%%inputs.parameters.APP_NAME%%"
+deployment_name: "user-db"
+
+inputs:
+  parameters:
+    APP_NAME:
+      default: "sock-shop"
+    USER_DB_VOL_NAME:
+
+volumes:
+  user-db-vol:
+    name: "%%inputs.parameters.USER_DB_VOL_NAME%%"
+
+scale:
+  min: 1
+
+internal_routes:
+  - name: user-db
+    ports:
+      - port: 27017
+        target_port: 27017
+
+containers:
+  user-db-container:
+    image: "weaveworksdemos/user-db:0.3.0"
+    resources:
+      mem_mib: 256
+      cpu_cores: 0.1
+    inputs:
+      volumes:
+        user-db-vol:
+          from: "%%volumes.user-db-vol%%"
+          mount_path: /tmp
+

@@ -1,0 +1,39 @@
+---
+type: deployment
+version: 1
+name: carts-db
+
+application_name: "%%inputs.parameters.APP_NAME%%"
+deployment_name: "carts-db"
+  
+inputs:
+  parameters:
+    APP_NAME:
+      default: "sock-shop"
+    CART_DB_VOL_NAME:
+
+volumes:
+  cartdb-vol:
+    name: "%%inputs.parameters.CART_DB_VOL_NAME%%"
+
+scale:
+  min: 1
+        
+
+internal_routes:
+  - name: carts-db
+    ports:
+      - port: 27017
+        target_port: 27017
+
+containers:
+  carts-db-container:
+    image: "mongo:latest"
+    resources:
+      mem_mib: 128
+      cpu_cores: 0.1
+    inputs:
+      volumes:
+        cartdb-vol:
+          from: "%%volumes.cartdb-vol%%"
+          mount_path: /tmp

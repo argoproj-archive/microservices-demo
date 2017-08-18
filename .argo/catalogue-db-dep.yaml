@@ -1,0 +1,34 @@
+---
+type: deployment
+version: 1
+name: catalogue-db
+
+application_name: "%%inputs.parameters.APP_NAME%%"
+deployment_name: "catalogue-db"
+
+inputs:
+  parameters:
+    APP_NAME:
+      default: "sock-shop"
+
+scale:
+  min: 1
+
+internal_routes:
+  - name: catalogue-db
+    ports:
+      - port: 3306
+        target_port: 3306
+
+containers:
+  catalogue-db-container:
+    image: "weaveworksdemos/catalogue-db:0.3.0"
+    env:
+      - name: MYSQL_ROOT_PASSWORD
+        value: "fake_password"
+      - name: MYSQL_DATABASE
+        value: "socksdb"
+    resources:
+      mem_mib: 512
+      cpu_cores: 0.2
+

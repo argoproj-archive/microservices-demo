@@ -1,0 +1,33 @@
+---
+type: deployment
+version: 1
+name: catalogue
+
+application_name: "%%inputs.parameters.APP_NAME%%"
+deployment_name: "catalogue"
+
+inputs:
+  parameters:
+    APP_NAME:
+       default: "sock-shop"
+
+scale:
+  min: 1
+
+internal_routes:
+  - name: catalogue
+    ports:
+      - port: 80
+        target_port: 80
+
+containers:
+  catalogue-container:
+    image: weaveworksdemos/catalogue:0.3.5
+    env:
+    - name: ZIPKIN
+      value: "http://zipkin:9411/api/v1/spans"
+    resources:
+      mem_mib: 128
+      cpu_cores: 0.1
+
+---
