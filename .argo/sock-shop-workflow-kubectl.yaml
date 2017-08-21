@@ -1,0 +1,42 @@
+---
+type: workflow
+version: 1
+name: sock-shop-workflow-kubectl
+description: This is the workflow to deploy microservices based sock-shop app
+
+inputs:
+    parameters:
+        COMMIT:
+            default: "%%session.commit%%" 
+        REPO:
+            default: "%%session.repo%%"
+        APP_NAME:
+            default: "sock-shop"
+        FILE_PATH:
+            default: "/src/deploy/kubernetes/manifests"
+
+
+steps:
+    - checkout:
+          template: argo-checkout
+    - deploy-sock-shop:
+        template: kubectl-deploy
+        arguments:
+             artifacts.CODE: "%%steps.checkout.outputs.artifacts.CODE%%"
+---
+type: container
+version: 1
+name: kubectl-deploy
+description: Deploy sockshop using kubernetes YAMLs
+resources:
+    mem_mib: 1024
+    cpu_cores: 0.2
+image: argoproj/kubectl
+command: [sh, -c]
+args: ['kubectl create -f %%inputs.parameters.FILE_PATH%%']
+inputs:
+    artifacts:
+        CODE:
+            path: /src
+    parameters:
+        FILE_PATH:
