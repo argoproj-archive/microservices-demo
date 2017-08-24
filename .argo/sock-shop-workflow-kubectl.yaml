@@ -32,8 +32,7 @@ resources:
     mem_mib: 1024
     cpu_cores: 0.2
 image: argoproj/kubectl:v1.6.7
-command: [sh, -c]
-args: ['kubectl create -f %%inputs.parameters.FILE_PATH%%']
+args: [' create -f %%inputs.parameters.FILE_PATH%%']
 inputs:
     artifacts:
         CODE:
