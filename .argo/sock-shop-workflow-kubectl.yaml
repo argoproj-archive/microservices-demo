@@ -31,7 +31,7 @@ description: Deploy sockshop using kubernetes YAMLs
 resources:
     mem_mib: 1024
     cpu_cores: 0.2
-image: argoproj/kubectl
+image: argoproj/kubectl:1.6.7
 command: [sh, -c]
 args: ['kubectl create -f %%inputs.parameters.FILE_PATH%%']
 inputs:
